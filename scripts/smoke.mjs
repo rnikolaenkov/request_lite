@@ -2393,6 +2393,21 @@ try {
       assert.deepEqual(after, before)
     })
 
+    // Path traversal: id приходит и из MCP (внешний вход) — путь не должен выходить
+    // за пределы хранилища ни на чтение, ни на запись, ни на удаление.
+    await check('path traversal в requestId/projectId отвергается (INVALID_ID)', async () => {
+      const outside = join(root, 'target.json')
+      await writeFile(outside, '{"safe":true}', 'utf8')
+      const evil = '../target'
+      await assert.rejects(() => storage.appendResponseHistory(P, evil, makeResponse('{}')), (err) => err.code === 'INVALID_ID')
+      await assert.rejects(() => storage.listResponseHistory(P, evil), (err) => err.code === 'INVALID_ID')
+      // delete* сперва ищут запись в индексе — traversal до пути не доходит, ожидаем «не найден»
+      await assert.rejects(() => storage.deleteRequest(P, evil), /не найден/)
+      await assert.rejects(() => storage.deleteProject(evil), /не найден/)
+      await assert.rejects(() => storage.deleteMockProject(evil), /не найден/)
+      assert.equal(await readFile(outside, 'utf8'), '{"safe":true}', 'файл вне хранилища не тронут')
+    })
+
     await check('удаление запроса удаляет файл истории; удаление проекта — каталог', async () => {
       const P2 = (await storage.createProject('Hist2')).id
       await storage.appendResponseHistory(P2, 'r1', makeResponse('{}'))

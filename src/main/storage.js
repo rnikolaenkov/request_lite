@@ -110,12 +110,26 @@ async function readJson(filePath, fallback) {
   }
 }
 
+// Идентификаторы приходят и из MCP (внешний вход для ИИ-агентов) — без валидации
+// путь мог выйти за пределы хранилища (path traversal). UI генерирует UUID,
+// формат `^[A-Za-z0-9-]+$` его покрывает.
+const ID_RE = /^[A-Za-z0-9-]+$/
+const assertId = (id, what) => {
+  if (typeof id !== 'string' || !ID_RE.test(id)) {
+    const error = new Error(`Недопустимый идентификатор ${what}: ${JSON.stringify(id)}`)
+    error.code = 'INVALID_ID'
+    throw error
+  }
+  return id
+}
+
 const indexPath = () => join(getStorageRoot(), 'projects.json')
-const projectPath = (id) => join(getStorageRoot(), 'projects', `${id}.json`)
-const historyDir = (projectId) => join(getStorageRoot(), 'history', projectId)
-const historyPath = (projectId, requestId) => join(historyDir(projectId), `${requestId}.json`)
+const projectPath = (id) => join(getStorageRoot(), 'projects', `${assertId(id, 'проекта')}.json`)
+const historyDir = (projectId) => join(getStorageRoot(), 'history', assertId(projectId, 'проекта'))
+const historyPath = (projectId, requestId) =>
+  join(historyDir(projectId), `${assertId(requestId, 'запроса')}.json`)
 const mockIndexPath = () => join(getStorageRoot(), 'mock-projects.json')
-const mockProjectPath = (id) => join(getStorageRoot(), 'mock-projects', `${id}.json`)
+const mockProjectPath = (id) => join(getStorageRoot(), 'mock-projects', `${assertId(id, 'мок-проекта')}.json`)
 const settingsPath = () => join(getStorageRoot(), 'settings.json')
 
 // --- Проекты ---
