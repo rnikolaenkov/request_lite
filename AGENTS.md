@@ -25,7 +25,7 @@
 - Требование среды: Node ≥ 18
 
 ## Релизы (тег ↔ версия)
-Единый источник версии — `package.json`: electron-builder берёт её для сборки, `serverInfo` MCP-сервера — из того же файла, git-тег создаётся из неё же командой `npm version`. Рассинхрон исключается тем, что бамп и тег делаются одной командой на чистом дереве. Flow: на `master` после мержа develop → `npm run release -- patch|minor|major` → `npm run dist` → `git push --follow-tags origin master`. Бамп в `develop` без тега — `npm version patch --no-git-tag-version`.
+Единый источник версии — `package.json`: electron-builder берёт её для сборки, `serverInfo` MCP-сервера — из того же файла, git-тег создаётся из неё же командой `npm version`. Рассинхрон исключается тем, что бамп и тег делаются одной командой на чистом дереве. Flow: на `master` после мержа develop → `npm run release -- patch|minor|major` → `npm run dist` → `git push --follow-tags origin master && git push --follow-tags gitverse master` (два ремоута: `origin` = GitHub, `gitverse` = GitVerse; тег обязан быть в обоих). Бамп в `develop` без тега — `npm version patch --no-git-tag-version`. API-операции (PR/issues/релизы): GitHub — через `gh` CLI, GitVerse — через GitVerse MCP (скилл `dual-release`).
 
 ## Архитектура (границы слоёв — не нарушать)
 ```
