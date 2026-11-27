@@ -1,58 +1,69 @@
 /* ===== Темы: только цвета, layout-метрики от темы не зависят ===== */
 /* Тёмная (по умолчанию, :root = <html data-theme="dark">) */
 :root {
-  --bg-primary: #1b1b1b;
-  --bg-secondary: #232323;
-  --bg-elevated: #2c2c2c;
-  --bg-hover: #333333;
-  --text-primary: #e6e6e6;
-  --text-secondary: #9d9d9d;
-  --text-disabled: #6a6a6a;
-  --border: #3d3d3d;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --bg-primary: #131417;
+  --bg-secondary: #191b1f;
+  --bg-elevated: #22252b;
+  --bg-hover: #2a2e36;
+  --text-primary: #eceef2;
+  --text-secondary: #9aa0ab;
+  --text-disabled: #5d636e;
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
   --accent: #ff6c37;
-  --accent-hover: #ff8355;
-  --accent-text: #ffffff;
-  --danger: #e05252;
+  --accent-hover: #ff8254;
+  --accent-soft: rgba(255, 108, 55, 0.14);
+  --accent-text: #1a0e06;
+  --accent-ink: #ff6c37;
+  --focus-ring: 0 0 0 2px var(--accent);
+  --danger: #e5534b;
   --status-ok: #3fb96f;
-  --status-warn: #dfa114;
-  --status-err: #e05252;
-  --overlay: rgba(0, 0, 0, 0.55);
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --status-warn: #e3a018;
+  --status-err: #e5534b;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
   --method-get: #3fb96f;
-  --method-post: #dfa114;
+  --method-post: #e3a018;
   --method-put: #4d9ff5;
   --method-patch: #3ecfcf;
-  --method-delete: #e05252;
+  --method-delete: #e5534b;
   --method-head: #b58ee8;
-  --method-options: #9d9d9d;
+  --method-options: #9aa0ab;
 }
 
 /* Светлая */
 html[data-theme='light'] {
   --bg-primary: #ffffff;
-  --bg-secondary: #f2f2f2;
-  --bg-elevated: #e9e9e9;
-  --bg-hover: #dedede;
-  --text-primary: #212121;
-  --text-secondary: #6b6b6b;
-  --text-disabled: #a8a8a8;
-  --border: #d5d5d5;
+  --bg-secondary: #f6f7f9;
+  --bg-elevated: #ffffff;
+  --bg-hover: #eceef2;
+  --text-primary: #181a1f;
+  --text-secondary: #5c6370;
+  --text-disabled: #9ca3af;
+  --border: rgba(0, 0, 0, 0.09);
+  --border-strong: rgba(0, 0, 0, 0.18);
   --accent: #ff6c37;
   --accent-hover: #e85a26;
-  --accent-text: #ffffff;
-  --danger: #cc3b3b;
+  --accent-soft: rgba(255, 108, 55, 0.12);
+  --accent-text: #1a0e06;
+  --accent-ink: #c2410c;
+  --focus-ring: 0 0 0 2px var(--accent-ink);
+  --danger: #d13838;
   --status-ok: #1f8f4d;
   --status-warn: #b07d0a;
-  --status-err: #cc3b3b;
-  --overlay: rgba(0, 0, 0, 0.35);
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-  --method-get: #1f8f4d;
-  --method-post: #b07d0a;
-  --method-put: #2a7fd4;
-  --method-patch: #199e9e;
-  --method-delete: #cc3b3b;
+  --status-err: #d13838;
+  --overlay: rgba(15, 18, 25, 0.35);
+  --shadow: 0 12px 32px rgba(15, 18, 25, 0.14);
+  --method-get: #18723f;
+  --method-post: #8a6206;
+  --method-put: #1e6bb8;
+  --method-patch: #0f7a7a;
+  --method-delete: #d13838;
   --method-head: #8a5fd0;
-  --method-options: #6b6b6b;
+  --method-options: #5c6370;
 }
 
 /* ===== База ===== */
@@ -68,10 +79,12 @@ body,
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-sans);
   font-size: 13px;
+  line-height: 1.45;
   color: var(--text-primary);
   background: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
 }
 
 button {
@@ -81,29 +94,71 @@ button {
   border: none;
   padding: 0;
   cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
 
 input,
-select {
+select,
+textarea {
   font: inherit;
   color: var(--text-primary);
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 6px 8px;
+  border-radius: 6px;
+  padding: 6px 10px;
   outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   border-color: var(--accent);
+  box-shadow: var(--focus-ring);
 }
 
 input:disabled,
-select:disabled {
+select:disabled,
+textarea:disabled {
   color: var(--text-disabled);
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-disabled);
 }
 
 /* ===== Каркас приложения ===== */
@@ -115,8 +170,32 @@ select:disabled {
 
 .app-main {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: var(--sidebar-width, 260px) 6px 1fr;
   min-height: 0;
+}
+
+.sidebar-resizer {
+  position: relative;
+  cursor: col-resize;
+  background: transparent;
+  transition: background-color 0.15s ease;
+}
+
+/* Расширенная зона попадания: полоса 6px + прозрачные крылья по 9px с каждой стороны */
+.sidebar-resizer::before {
+  content: '';
+  position: absolute;
+  inset: 0 -9px;
+}
+
+.sidebar-resizer:hover,
+.sidebar-resizer:active {
+  background: var(--accent);
+}
+
+.sidebar-resizer:focus-visible {
+  background: var(--accent);
+  box-shadow: var(--focus-ring);
 }
 
 .editor-area {
@@ -145,7 +224,7 @@ select:disabled {
 }
 
 .brand-accent {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .toolbar-center {
@@ -231,7 +310,7 @@ select:disabled {
 }
 
 .link-btn {
-  color: var(--accent);
+  color: var(--accent-ink);
   text-decoration: underline;
 }
 
@@ -324,7 +403,7 @@ select:disabled {
 
 .project-item.active {
   background: var(--bg-elevated);
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .project-name {
@@ -390,7 +469,7 @@ select:disabled {
 .tab.active {
   color: var(--text-primary);
   background: var(--bg-primary);
-  box-shadow: inset 0 2px 0 var(--accent);
+  box-shadow: inset 0 2px 0 var(--accent-ink);
 }
 
 .tab-method {
@@ -412,7 +491,7 @@ select:disabled {
 }
 
 .tab-dirty {
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 15px;
   line-height: 1;
 }
@@ -651,9 +730,10 @@ select:disabled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 3px;
+  /* Видимая иконка 16px, зона попадания расширена до 24px прозрачным фоном */
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
 }
 
 .tab-close:hover {
@@ -665,14 +745,14 @@ select:disabled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
 }
 
 .tab-pin:hover {
   background: var(--bg-hover);
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 /* Перетаскиваемая вкладка приподнята над соседями, полоса показывает захват. */
@@ -706,6 +786,7 @@ select:disabled {
 
 .request-line {
   display: flex;
+  align-items: center;
   gap: 8px;
   padding: 10px 12px;
 }
@@ -718,7 +799,8 @@ select:disabled {
 .url-input {
   flex: 1;
   min-width: 0;
-  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
 }
 
 .send-btn {
@@ -743,8 +825,8 @@ select:disabled {
 }
 
 .request-tab.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
+  color: var(--accent-ink);
+  border-bottom-color: var(--accent-ink);
 }
 
 .request-tab-content {
@@ -771,7 +853,7 @@ select:disabled {
 
 .request-tab.active .tab-counter {
   background: var(--bg-hover);
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .tab-pane {
@@ -1387,7 +1469,7 @@ select:disabled {
 
 .mock-log-method {
   font-weight: 700;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-family: 'SF Mono', Menlo, Consolas, monospace;
 }
 

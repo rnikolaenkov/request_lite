@@ -1,6 +1,7 @@
 <script setup>
 import { inject, onBeforeUnmount, ref } from 'vue'
 import { useProjectsStore } from '../stores/projects.js'
+import Icon from './Icon.vue'
 
 const projects = useProjectsStore()
 const dialog = inject('dialog')
@@ -193,14 +194,22 @@ async function remove(project) {
       v-for="project in projects.projects"
       :key="project.id"
       :data-id="project.id"
+      tabindex="0"
       class="project-item"
+      role="button"
       :class="{ active: project.id === projects.activeProjectId, locked: project.locked === true, dragging: project.id === draggingId }"
       @click="onSelect(project)"
+      @keydown.enter.prevent="onSelect(project)"
+      @keydown.space.prevent="onSelect(project)"
       @pointerdown="onRowPointerDown(project, $event)"
     >
       <span class="project-name" :title="project.name">
-        <span v-if="project.locked === true" class="project-lock-badge" title="Проект заблокирован">🔒</span>
-        <span v-if="project.pinned === true" class="project-lock-badge" title="Проект закреплён">📌</span>
+        <span v-if="project.locked === true" class="project-lock-badge" title="Проект заблокирован">
+          <Icon name="lock" :size="12" />
+        </span>
+        <span v-if="project.pinned === true" class="project-lock-badge" title="Проект закреплён">
+          <Icon name="pin" :size="12" />
+        </span>
         {{ project.name }}
       </span>
       <span class="project-actions">
@@ -211,7 +220,7 @@ async function remove(project) {
           @pointerdown.stop
           @click.stop="toggleLock(project)"
         >
-          {{ project.locked === true ? '🔒' : '🔓' }}
+          <Icon :name="project.locked === true ? 'lock' : 'unlock'" :size="13" />
         </button>
         <button
           class="btn-icon"
@@ -220,7 +229,7 @@ async function remove(project) {
           @pointerdown.stop
           @click.stop="projects.setPinned(project.id, project.pinned !== true)"
         >
-          {{ project.pinned === true ? '📍' : '📌' }}
+          <Icon name="pin" :size="13" />
         </button>
         <button
           class="btn-icon"
@@ -229,7 +238,7 @@ async function remove(project) {
           @pointerdown.stop
           @click.stop="rename(project)"
         >
-          ✎
+          <Icon name="edit" :size="13" />
         </button>
         <button
           class="btn-icon btn-icon-danger"
@@ -239,7 +248,7 @@ async function remove(project) {
           @pointerdown.stop
           @click.stop="remove(project)"
         >
-          ✕
+          <Icon name="close" :size="13" />
         </button>
       </span>
     </li>

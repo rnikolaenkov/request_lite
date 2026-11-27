@@ -1,5 +1,6 @@
 <script setup>
 import { inject } from 'vue'
+import Icon from './Icon.vue'
 import { useMocksStore } from '../stores/mocks.js'
 
 // Список мок-проектов в сайдбаре (вид «Мок-сервер»): выбор, переименование, удаление.
@@ -35,8 +36,12 @@ async function remove(project) {
       v-for="project in mocks.projects"
       :key="project.id"
       class="project-item"
+      role="button"
       :class="{ active: project.id === mocks.activeProjectId }"
+      tabindex="0"
       @click="mocks.select(project.id)"
+      @keydown.enter.prevent="mocks.select(project.id)"
+      @keydown.space.prevent="mocks.select(project.id)"
     >
       <span class="project-name" :title="project.name">{{ project.name }}</span>
       <span class="project-actions">
@@ -46,7 +51,7 @@ async function remove(project) {
           aria-label="Переименовать мок-проект"
           @click.stop="rename(project)"
         >
-          ✎
+          <Icon name="edit" :size="13" />
         </button>
         <button
           class="btn-icon btn-icon-danger"
@@ -54,7 +59,7 @@ async function remove(project) {
           aria-label="Удалить мок-проект"
           @click.stop="remove(project)"
         >
-          ✕
+          <Icon name="close" :size="13" />
         </button>
       </span>
     </li>

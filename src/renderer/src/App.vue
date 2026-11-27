@@ -26,6 +26,42 @@ const dialog = ref(null)
 const curlImportVisible = ref(false)
 const aboutVisible = ref(false)
 const settingsVisible = ref(false)
+const SIDEBAR_MIN = 200
+const SIDEBAR_MAX = 460
+const storedWidth = Number(localStorage.getItem('request_lite_sidebar_width'))
+const sidebarWidth = ref(
+  storedWidth >= SIDEBAR_MIN && storedWidth <= SIDEBAR_MAX ? storedWidth : 260
+)
+
+function clampWidth(value) {
+  return Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MIN, value))
+}
+
+function startResize(event) {
+  event.preventDefault()
+  const startX = event.clientX
+  const startWidth = sidebarWidth.value
+  const onMove = (e) => {
+    sidebarWidth.value = clampWidth(startWidth + (e.clientX - startX))
+  }
+  const onEnd = () => {
+    localStorage.setItem('request_lite_sidebar_width', String(sidebarWidth.value))
+    teardown()
+  }
+  function teardown() {
+    window.removeEventListener('pointermove', onMove)
+    window.removeEventListener('pointerup', onEnd)
+    window.removeEventListener('pointercancel', onEnd)
+  }
+  window.addEventListener('pointermove', onMove)
+  window.addEventListener('pointerup', onEnd)
+  window.addEventListener('pointercancel', onEnd)
+}
+
+function resizeByKeyboard(delta) {
+  sidebarWidth.value = clampWidth(sidebarWidth.value + delta)
+  localStorage.setItem('request_lite_sidebar_width', String(sidebarWidth.value))
+}
 
 // Импорт коллекции Postman: file picker → парсинг → bulk-импорт в новый проект.
 async function importPostman() {
@@ -97,8 +133,22 @@ async function newMockProject() {
 <template>
   <div class="app">
     <Toolbar />
-    <div class="app-main">
+    <div class="app-main" :style="{ '--sidebar-width': `${sidebarWidth}px` }">
       <Sidebar @new-project="newProject" @new-mock-project="newMockProject" />
+      <div
+        class="sidebar-resizer"
+        role="separator"
+        aria-orientation="vertical"
+        :aria-valuenow="sidebarWidth"
+        aria-valuemin="200"
+        aria-valuemax="460"
+        aria-label="Ширина сайдбара"
+        tabindex="0"
+        title="Изменить ширину сайдбара (стрелки ← →)"
+        @pointerdown="startResize"
+        @keydown.left.prevent="resizeByKeyboard(-8)"
+        @keydown.right.prevent="resizeByKeyboard(8)"
+      />
       <main class="editor-area">
         <template v-if="ui.view === 'requests'">
           <RequestTabs />

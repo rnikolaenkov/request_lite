@@ -4,6 +4,7 @@ import { useProjectsStore } from '../stores/projects.js'
 import { useRequestsStore } from '../stores/requests.js'
 import { useTabsStore } from '../stores/tabs.js'
 import KeyValueTable from './KeyValueTable.vue'
+import LoadTestModal from './LoadTestModal.vue'
 
 const tabs = useTabsStore()
 const projects = useProjectsStore()
@@ -12,6 +13,7 @@ const dialog = inject('dialog')
 const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']
 const requestTabs = ['Params', 'Headers', 'Body', 'Auth']
 const activeRequestTab = ref('Params')
+const loadTestVisible = ref(false)
 
 const bodyTypes = [
   { value: 'none', label: 'none' },
@@ -98,6 +100,15 @@ function cancel() {
       />
       <button
         v-if="!tabs.activeTab.sending"
+        class="btn"
+        :disabled="!canSend"
+        title="Нагрузочный тест (Load Tester)"
+        @click="loadTestVisible = true"
+      >
+        Load
+      </button>
+      <button
+        v-if="!tabs.activeTab.sending"
         class="btn save-request-btn"
         :disabled="!canSave"
         :title="saveTooltip"
@@ -110,11 +121,12 @@ function cancel() {
         v-if="!tabs.activeTab.sending"
         class="btn btn-primary send-btn"
         :disabled="!canSend"
+        aria-label="Отправить запрос"
         @click="send"
       >
         Send
       </button>
-      <button v-else class="btn btn-danger send-btn" @click="cancel">Cancel</button>
+      <button v-else class="btn btn-danger send-btn" aria-label="Отменить отправку" @click="cancel">Cancel</button>
     </div>
 
     <div class="request-tabs-row">
@@ -285,5 +297,6 @@ function cancel() {
         </label>
       </div>
     </div>
+    <LoadTestModal :visible="loadTestVisible" @close="loadTestVisible = false" />
   </section>
 </template>

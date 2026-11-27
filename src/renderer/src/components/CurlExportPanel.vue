@@ -41,7 +41,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
         <option v-for="item in langs" :key="item.value" :value="item.value">{{ item.label }}</option>
       </select>
       <span class="toolbar-right">
-        <button class="btn" @click="copy">{{ copied ? 'Скопировано ✓' : 'Копировать' }}</button>
+        <button class="btn" @click="copy">{{ copied ? 'Скопировано' : 'Копировать' }}</button>
         <button class="btn-icon" title="Закрыть" aria-label="Закрыть панель" @click="emit('close')">
           ×
         </button>

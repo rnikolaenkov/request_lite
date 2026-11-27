@@ -25,7 +25,7 @@ const ui = useUiStore()
       <p v-else-if="projects.loaded && !projects.projects.length" class="sidebar-empty">
         Пока нет проектов.<br />
         Создайте первый:
-        <button class="link-btn" @click="$emit('new-project')">+ New Project</button>
+        <button class="link-btn" @click="$emit('new-project')">+ Новый проект</button>
       </p>
       <ProjectList v-else @new-project="$emit('new-project')" />
       <RequestList v-if="projects.activeProjectId" />

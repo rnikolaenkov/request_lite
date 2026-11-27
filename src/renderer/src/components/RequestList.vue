@@ -3,6 +3,7 @@ import { inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useProjectsStore } from '../stores/projects.js'
 import { useRequestsStore } from '../stores/requests.js'
 import { useTabsStore } from '../stores/tabs.js'
+import Icon from './Icon.vue'
 
 const projects = useProjectsStore()
 const requests = useRequestsStore()
@@ -207,16 +208,24 @@ async function remove(request) {
         v-for="request in requests.items"
         :key="request.id"
         :data-id="request.id"
+        tabindex="0"
         class="project-item request-item"
+      role="button"
         :class="{ locked: request.locked === true, dragging: request.id === draggingId }"
         :title="request.name"
         @click="open(request)"
+        @keydown.enter.prevent="open(request)"
+        @keydown.space.prevent="open(request)"
         @pointerdown="onRowPointerDown(request, $event)"
       >
         <span class="item-method" :class="`method-${request.method}`">{{ request.method }}</span>
         <span class="project-name" :title="request.name">
-          <span v-if="request.locked === true" class="project-lock-badge" title="Запрос заблокирован">🔒</span>
-          <span v-if="request.pinned === true" class="project-lock-badge" title="Запрос закреплён">📌</span>
+          <span v-if="request.locked === true" class="project-lock-badge" title="Запрос заблокирован">
+            <Icon name="lock" :size="12" />
+          </span>
+          <span v-if="request.pinned === true" class="project-lock-badge" title="Запрос закреплён">
+            <Icon name="pin" :size="12" />
+          </span>
           {{ request.name }}
         </span>
         <span class="project-actions">
@@ -227,7 +236,7 @@ async function remove(request) {
             @pointerdown.stop
             @click.stop="toggleLock(request)"
           >
-            {{ request.locked === true ? '🔒' : '🔓' }}
+            <Icon :name="request.locked === true ? 'lock' : 'unlock'" :size="13" />
           </button>
           <button
             class="btn-icon"
@@ -236,7 +245,7 @@ async function remove(request) {
             @pointerdown.stop
             @click.stop="requests.setPinned(request.id, request.pinned !== true)"
           >
-            {{ request.pinned === true ? '📍' : '📌' }}
+            <Icon name="pin" :size="13" />
           </button>
           <button
             class="btn-icon btn-icon-danger"
@@ -246,7 +255,7 @@ async function remove(request) {
             @pointerdown.stop
             @click.stop="remove(request)"
           >
-            ✕
+            <Icon name="close" :size="13" />
           </button>
         </span>
       </li>

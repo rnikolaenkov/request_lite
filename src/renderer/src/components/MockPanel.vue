@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useMocksStore } from '../stores/mocks.js'
 import { highlightJson, prettyJson } from '../lib/format.js'
+import Icon from './Icon.vue'
 import KeyValueTable from './KeyValueTable.vue'
 
 // Панель мок-сервера (вид «Мок-сервер»): управление слушателем, редактор
@@ -223,7 +224,7 @@ function highlightedBody(entry) {
                 aria-label="Удалить маршрут"
                 @click="removeRoute(index)"
               >
-                ✕
+                <Icon name="close" :size="13" />
               </button>
             </div>
             <KeyValueTable
