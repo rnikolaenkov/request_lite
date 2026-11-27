@@ -1,6 +1,6 @@
 {
   "name": "request-lite",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Локальный HTTP-клиент в стиле Postman на Electron + Vue 3",
   "type": "module",
   "main": "out/main/index.js",
